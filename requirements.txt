@@ -1,1 +1,12 @@
-###AQUI SE COPIARAN LAS LIBRERIAS Y DEPENDENCIAS NECESARIAS PARA EL PROYECTO###
+pandas
+numpy
+seaborn
+matplotlib.pyplot
+scipy.stats
+statsmodels.stats.multitest
+itertools
+folium
+sklearn.linear_model
+sklearn.model_selection
+sklearn.metrics 
+sklearn.ensemble
