@@ -72,7 +72,7 @@ prediction = model.predict(input_df)
 # Mostrar el resultado de la predicción
 st.write("**Resultado de la Predicción:**")
 if model_choice == "Linear Regression":
-    st.write(f"El precio estimado del apartamento es: ${prediction[0]:.2f}")
+    st.write(f"El precio estimado del apartamento es: ${prediction[0] * 100:.2f}%")
 elif model_choice == "Random Forest":
     st.write(f"Probabilidad de estar por debajo del precio medio: {prediction[0] * 100:.2f}%")
     st.write(f"Probabilidad de estar por encima del precio medio: {prediction[0] * 100:.2f}%")
