@@ -65,17 +65,22 @@ st.dataframe(input_df)
 # Cargar el modelo seleccionado
 model = load_model(model_choice)
 
-# Realizar predicción
-prediction = model.predict(input_df)
+# Realizar la predicción (eliminar línea duplicada)
 prediction = model.predict(input_df)
 
 # Mostrar el resultado de la predicción
 st.write("**Resultado de la Predicción:**")
+
 if model_choice == "Linear Regression":
-    st.write(f"El precio estimado del apartamento es: ${prediction[0] * 100:.2f}%")
+    st.write(f"El precio estimado del apartamento es: ${prediction[0]:.2f}")
 elif model_choice == "Random Forest":
-    st.write(f"Probabilidad de estar por debajo del precio medio: {prediction[0] * 100:.2f}%")
-    st.write(f"Probabilidad de estar por encima del precio medio: {prediction[0] * 100:.2f}%")
+    # Si la predicción es un valor de probabilidad, multiplicamos por 100 para obtener el porcentaje
+    probabilidad_abajo = prediction[0] * 100
+    probabilidad_arriba = (1 - prediction[0]) * 100
+
+    # Mostrar el porcentaje de probabilidad
+    st.write(f"Probabilidad de estar por debajo del precio medio: {probabilidad_abajo:.2f}%")
+    st.write(f"Probabilidad de estar por encima del precio medio: {probabilidad_arriba:.2f}%")
 
 # Botón para realizar la predicción
 if st.sidebar.button("Realizar Predicción"):
