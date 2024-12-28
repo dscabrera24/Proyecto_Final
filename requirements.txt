@@ -1,12 +1,14 @@
 pandas
 numpy
 seaborn
-matplotlib.pyplot
-scipy.stats
-statsmodels.stats.multitest
+matplotlib
+scipy
+statsmodels
 itertools
 folium
+scikit-learn
 sklearn.linear_model
 sklearn.model_selection
 sklearn.metrics 
 sklearn.ensemble
+streamlit

@@ -1,19 +1,17 @@
-###VA A CONTENER LA PAGINA EDA###
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-from ydata_profiling import ProfileReport
-from streamlit_pandas_profiling import st_profile_report
-from src.eda import panoramaGeneral, resumenEstadistico, variablesNum, variablesCat, correlación
-from src.hipotesis import df
-
-@st.cache_data
-def load_data():
-    return pd.read_csv("data/AB_NYC_2019.csv")  
 
 # Configuración inicial
 st.set_page_config(page_title="Análisis Exploratorio de Datos", layout="wide")
+
+@st.cache_data
+def load_data():
+    return pd.read_csv("data/AB_NYC_2019.csv")
+
+# Cargar los datos
+df = load_data()
 
 # Página principal
 st.title("Análisis Exploratorio de Datos")
@@ -27,41 +25,62 @@ st.dataframe(df.head())
 st.sidebar.title("Opciones de Análisis")
 options = st.sidebar.radio(
     "Selecciona el análisis a realizar:",
-    ("Panorama General", "Resumen Estadístico", "Análisis Numérico", "Análisis Categórico", "Correlación", "Reporte Completo")
+    ("Panorama General", "Resumen Estadístico", "Distribuciones Numéricas", "Distribuciones Categóricas", "Correlación", "Visualización de Precio")
 )
 
 if options == "Panorama General":
     st.header("Panorama General del Dataset")
-    with st.spinner("Generando información..."):
-        st.write(panoramaGeneral.__doc__)
-        panoramaGeneral()
+    st.write("**Tamaño del dataset:**")
+    st.write(f"Filas: {df.shape[0]}, Columnas: {df.shape[1]}")
+    st.write("**Columnas y tipos de datos:**")
+    st.write(df.dtypes)
+    st.write("**Valores nulos por columna:**")
+    st.write(df.isnull().sum())
 
 elif options == "Resumen Estadístico":
     st.header("Resumen Estadístico del Dataset")
-    with st.spinner("Generando resumen..."):
-        st.write(resumenEstadistico.__doc__)
-        resumenEstadistico()
+    st.write(df.describe())
 
-elif options == "Análisis Numérico":
-    st.header("Análisis de Variables Numéricas")
-    with st.spinner("Analizando variables numéricas..."):
-        st.write(variablesNum.__doc__)
-        variablesNum()
+elif options == "Distribuciones Numéricas":
+    st.header("Distribución de Variables Numéricas")
+    num_cols = df.select_dtypes(include=["float64", "int64"]).columns
+    for col in num_cols:
+        fig, ax = plt.subplots()
+        sns.histplot(df[col].dropna(), kde=True, ax=ax)
+        ax.set_title(f"Distribución de {col}")
+        st.pyplot(fig)
 
-elif options == "Análisis Categórico":
-    st.header("Análisis de Variables Categóricas")
-    with st.spinner("Analizando variables categóricas..."):
-        st.write(variablesCat.__doc__)
-        variablesCat()
+elif options == "Distribuciones Categóricas":
+    st.header("Distribución de Variables Categóricas")
+    cat_cols = df.select_dtypes(include=["object"]).columns
+    for col in cat_cols:
+        fig, ax = plt.subplots()
+        df[col].value_counts().plot(kind="bar", ax=ax)
+        ax.set_title(f"Distribución de {col}")
+        st.pyplot(fig)
 
 elif options == "Correlación":
     st.header("Matriz de Correlación")
-    with st.spinner("Calculando correlaciones..."):
-        st.write(correlación.__doc__)
-        correlación()
+    
+    # Filtrar solo columnas numéricas
+    numeric_df = df.select_dtypes(include=["number"])
+    
+    # Calcular matriz de correlación
+    corr = numeric_df.corr()
+    
+    # Crear el gráfico de calor
+    fig, ax = plt.subplots(figsize=(10, 8))
+    sns.heatmap(corr, annot=True, cmap="coolwarm", ax=ax)
+    ax.set_title("Matriz de Correlación")
+    st.pyplot(fig)
 
-elif options == "Reporte Completo":
-    st.header("Reporte Exploratorio Completo")
-    with st.spinner("Generando reporte..."):
-        profile = ProfileReport(df, minimal=False)
-        st_profile_report(profile)
+elif options == "Visualización de Precio":
+    st.header("Relación entre Precio y otras Variables")
+    num_cols = df.select_dtypes(include=["float64", "int64"]).columns
+    for col in num_cols:
+        if col != "price":  # Asegúrate de que no sea la misma variable
+            fig, ax = plt.subplots()
+            sns.scatterplot(x=col, y="price", data=df, ax=ax)
+            ax.set_title(f"Precio vs {col}")
+            st.pyplot(fig)
+

@@ -8,22 +8,13 @@ import matplotlib.pyplot as plt
 # Importar funciones principales de hipótesis
 from .hipotesis import (
     hipotesis1,
-    hipotesis2Grafica,
-    hipotesis2Analisis,
-    hipotesis2Mapa,
+    hipotesis2,
     hipotesis3,
     hipotesis4,
     hipotesis5
 )
 
 # Importar funciones utilitarias
-from .hipotesis import (
-    limitar_outliers,
-    tratarNulos,
-    detect_outliers,
-    duplicados,
-    df
-)
 
 # Configuración global
 DATASET_PATH = "data/dataset.csv"
